@@ -145,7 +145,7 @@ createRestaurantHTML = (restaurant) => {
   li.append(image);
 
   const name = document.createElement('h2');
-  
+
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -179,10 +179,10 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 /**
-add serverWorker 
+add serverWorker
 */
 if ( navigator.serviceWorker ) {
-    navigator.serviceWorker.register( '../sw.js' )
+    navigator.serviceWorker.register( './sw.js' )
         .then( () => {
             console.log( `SW registered` )
         } )

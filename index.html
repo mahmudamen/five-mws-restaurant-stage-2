@@ -13,12 +13,13 @@
     <nav>
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
-	<a href="#filter-results" class="skip-link-to-filter">Skip to filter results</a>
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
-      <div id="map" role="application"></div>
+    <section id="map-container" aria-hidden="true" role="presentation">
+      <div id="map-wrapper">
+        <div id="map" style="position: relative; overflow: show;"></div>
+      </div>
     </section>
     <section>
       <div class="filter-options">
