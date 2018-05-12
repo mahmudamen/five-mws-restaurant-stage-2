@@ -5,9 +5,8 @@ var browserSync = require('browser-sync').create();
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var watch = require('gulp-watch');
-var sourcemaps = require('gulp-sourcemaps');
 
-gulp.task('default', ['copy-html', 'copy-images', 'styles', 'scripts'], function() {
+gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], function() {
 
 	browserSync.init({
 		server: './dist',
@@ -52,7 +51,13 @@ gulp.task('copy-images', function() {
 	gulp.src('img/*')
 		.pipe(gulp.dest('dist/img'));
 });
+gulp.task('s-w', function() {
+	gulp.src('./sw.js')
+		.pipe(gulp.dest('./dist'));
 
+	gulp.src('./manifest.json')
+		.pipe(gulp.dest('./dist'));
+});
 gulp.task('styles', function() {
 	gulp.src('sass/**/*.scss')
 		.pipe(sass({
