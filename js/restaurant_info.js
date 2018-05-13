@@ -97,6 +97,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
+
   title.innerHTML = 'Reviews';
   container.appendChild(title);
   	if(!document.getElementById('toggle-review-modal') ){
@@ -146,7 +147,7 @@ createReviewHTML = (review) => {
   return li;
 }
 window.onload = (event) => {
-	modal.style.display = 'block';
+	modal.style.display = 'none';
 }
 closeBtn.onclick = () => modal.style.display = "none";
 window.onclick = (event) => {
@@ -177,14 +178,14 @@ addReview = () => {
 
 	// Basic Form Validation
 	if(name.length < 5 || name.length > 30) errors.push('<p>Please enter a name with 5-30 characters.</p>');
-	
+
 	if(document.querySelector('input[name="rating"]:checked')) {
 		rating = document.querySelector('input[name="rating"]:checked').value;
 	} else {
 		errors.push('<p>Please choose a rating.</p>');
 	}
 	if(comments.length > 250 || comments.length < 0) errors.push('<p>Please write comments with between 25-250 characters in length. </p>');
-	
+
 	if(errors.length > 0) {
 		errorContainer.innerHTML = errors.join('');
 		errorContainer.style.padding = '10px';
@@ -196,7 +197,7 @@ addReview = () => {
 			self.restaurant.reviews = reviews;
 			fillReviewsHTML();
 		}));
-		
+
 		document.getElementById('review-form').reset();
 		modal.style.display = 'none';
 	}
