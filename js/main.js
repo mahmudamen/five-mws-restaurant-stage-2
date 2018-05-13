@@ -168,6 +168,7 @@ createRestaurantHTML = (restaurant) => {
 	fav.id = restaurant.id;
   		fav.setAttribute('src', '/img/fav-icon.png');
 		fav.classList.add('favorized');
+	li.append(fav);
   return li
 }
 

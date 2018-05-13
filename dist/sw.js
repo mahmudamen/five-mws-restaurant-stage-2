@@ -1,4 +1,3 @@
-importScripts('/js/idb.js');
 self.addEventListener('install', (event) => {
       const cacheurl = [
 			        './',
@@ -21,8 +20,7 @@ self.addEventListener('install', (event) => {
               './img/8.webp',
               './img/9.webp',
               './img/10.webp',
-			  './img/icon/favorites-icon.png',
-			  '/restaurant.html?id=1',
+			  './img/fav-icon.png',
       ];
       event.waitUntil(
     		caches.open('restaurant-cache-v1').then( (cache) => {
@@ -30,7 +28,11 @@ self.addEventListener('install', (event) => {
     		})
     	);
 });
-
+self.addEventListener('sync', function(event) {
+  if (event.tag == 'myFirstSync') {
+    event.waitUntil(console.log('myFirstSync'));
+  }
+});
 
 
 self.addEventListener('fetch', (event) => {
