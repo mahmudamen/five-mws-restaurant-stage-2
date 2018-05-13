@@ -9,7 +9,6 @@ var watch = require('gulp-watch');
 gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], function() {
 
 	browserSync.init({
-		browser: 'google chrome',
 		server: './dist',
 		port: 8000
 	});
@@ -50,11 +49,7 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('copy-images', function() {
-	gulp.src('img/**/*')
-		.pipe(imagemin({
-			progressive: true,
-			use: [pngquant()]
-		}))
+	gulp.src('img/*')
 		.pipe(gulp.dest('dist/img'));
 });
 gulp.task('s-w', function() {

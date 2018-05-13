@@ -166,7 +166,8 @@ createRestaurantHTML = (restaurant) => {
   	const fav = document.createElement('img');
 	fav.classList.add('fav');
 	fav.id = restaurant.id;
-  
+  		fav.setAttribute('src', '/img/fav-icon.png');
+		fav.classList.add('favorized');
   return li
 }
 

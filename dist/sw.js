@@ -21,8 +21,8 @@ self.addEventListener('install', (event) => {
               './img/8.webp',
               './img/9.webp',
               './img/10.webp',
-			  './img/icon/favorites-icon.png'
-			  'http://localhost:8000/restaurant.html?id=1'
+			  './img/icon/favorites-icon.png',
+			  '/restaurant.html?id=1',
       ];
       event.waitUntil(
     		caches.open('restaurant-cache-v1').then( (cache) => {
@@ -31,9 +31,6 @@ self.addEventListener('install', (event) => {
     	);
 });
 
-self.addEventListener('sync', function(event) {
-
-});
 
 
 self.addEventListener('fetch', (event) => {
