@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Common database helper functions.
  */
@@ -15,7 +13,65 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
   
+static getAPIData(api, callback, id=null, param=null) {
 
+		const port = 1337;
+		let api_url;
+		let fetch_options;
+
+		switch(api) {
+			case 'restaurants':
+				api_url = `http://localhost:${port}/restaurants`;
+				fetch_options = {method: 'GET'};
+				break;
+			case 'reviews':
+				api_url = `http://localhost:${port}/reviews`;
+				fetch_options = {method: 'GET'};
+				break;
+			case 'reviewById':
+				api_url = `http://localhost:${port}/reviews/?restaurant_id=${id}`;
+				fetch_options = {method: 'GET'};
+				break;
+			case 'addReview':
+				api_url = `http://localhost:${port}/reviews`;
+				
+				const review = {
+					"restaurant_id": parseInt(param[3]),
+					"name": param[0],
+					"rating": parseInt(param[1]),
+					"comments": param[2]
+				};
+
+				fetch_options = {
+					method: 'POST',
+					body: JSON.stringify(review),
+					headers: new Headers({
+						'Content-Type': 'application/json'
+					}) 
+				};
+				break;
+			case 'favorize':
+				api_url = `http://localhost:${port}/restaurants/${id}/?is_favorite=${param}`;
+				fetch_options = {method: 'PUT'};
+				break;
+			default:
+				break;
+		}
+
+		fetch(api_url,fetch_options).then( (response) => {
+			console.log(`Server: ${api} Called`);
+			
+			const contentType = response.headers.get('content-type');
+			if(contentType && contentType.indexOf('application/json') !== -1 ) {
+				return response.json();
+			} else { 
+				return 'API call successfull';
+			}
+		}).then( (data) => {
+			callback(data);
+		}).catch( error => console.error(error));
+
+	};
   
   /**
    * Fetch all restaurants.
@@ -125,7 +181,26 @@ class DBHelper {
       }
     });
   }
+  	static addReview(review, callback) {
 
+		callback();
+
+		if(!navigator.onLine){
+			// store locally
+			localStorage.setItem('review', review);
+			console.log('Local Storage: Review stored');
+		} else {
+			DBHelper.getAPIData('addReview', (data) => console.log(data), null, review);
+			console.log('data sent to api');
+		}
+	}
+	static getReviewsByRestaurant(restaurantId, callback) {
+		DBHelper.getAPIData('reviewById', (reviews) => {
+				console.log(reviews);
+				callback(null, reviews);
+		}, restaurantId);
+
+	}
   /**
    * Fetch all cuisines with proper error handling.
    */

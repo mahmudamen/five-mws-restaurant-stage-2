@@ -28,23 +28,9 @@ self.addEventListener('install', (event) => {
     		})
     	);
 });
-self.addEventListener('activate', function(e){
-    //console.log('[ServiceWorker] Activated');
-
-    e.waitUntil(
-        caches.keys().then(function(restaurant-cache-v1){
-            return Promise.all(cacheNames.map(function(currentCacheName){
-                if (currentCacheName !== restaurant-cache-v1) {
-                    //console.log("[ServiceWorker] Removing Cached Files from", currentCacheName);
-                    caches.delete(currentCacheName);
-                }
-            }))
-        })
-    )
-})
 
 self.addEventListener('sync', function(event) {
- 
+
 });
 
 
