@@ -21,6 +21,8 @@ self.addEventListener('install', (event) => {
               './img/8.webp',
               './img/9.webp',
               './img/10.webp',
+			  './img/icon/favorites-icon.png'
+			  'http://localhost:8000/restaurant.html?id=1'
       ];
       event.waitUntil(
     		caches.open('restaurant-cache-v1').then( (cache) => {
@@ -28,23 +30,9 @@ self.addEventListener('install', (event) => {
     		})
     	);
 });
-self.addEventListener('activate', function(e){
-    //console.log('[ServiceWorker] Activated');
-
-    e.waitUntil(
-        caches.keys().then(function(restaurant-cache-v1){
-            return Promise.all(cacheNames.map(function(currentCacheName){
-                if (currentCacheName !== restaurant-cache-v1) {
-                    //console.log("[ServiceWorker] Removing Cached Files from", currentCacheName);
-                    caches.delete(currentCacheName);
-                }
-            }))
-        })
-    )
-})
 
 self.addEventListener('sync', function(event) {
- 
+
 });
 
 

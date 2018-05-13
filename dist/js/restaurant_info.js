@@ -1,6 +1,7 @@
 let restaurant;
 var map;
-
+let modal = document.getElementById('add-review-modal');
+let closeBtn = document.getElementsByClassName('close')[0];
 /**
  * Initialize Google map, called from HTML.
  */
@@ -96,8 +97,18 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
+
   title.innerHTML = 'Reviews';
   container.appendChild(title);
+  	if(!document.getElementById('toggle-review-modal') ){
+		const addReviewButton = document.createElement('button');
+		addReviewButton.id = 'toggle-review-modal';
+		addReviewButton.innerHTML = 'Add Review';
+		addReviewButton.onclick = () => {
+			modal.style.display = 'block';
+		};
+		container.appendChild(addReviewButton);
+	}
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -135,7 +146,15 @@ createReviewHTML = (review) => {
 
   return li;
 }
-
+window.onload = (event) => {
+	modal.style.display = 'none';
+}
+closeBtn.onclick = () => modal.style.display = "none";
+window.onclick = (event) => {
+	if(event.target == modal) {
+		modal.style.display = 'none';
+	}
+}
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
@@ -146,6 +165,43 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   breadcrumb.appendChild(li);
 }
 
+
+addReview = () => {
+	event.preventDefault();
+	let restaurantId = getParameterByName('id');
+	let name = document.getElementById('anon').value;
+	let rating;
+	let comments = document.getElementById('review-comments').value;
+
+	let errors = [];
+	let errorContainer = document.getElementById('form-error');
+
+	// Basic Form Validation
+	if(name.length < 5 || name.length > 30) errors.push('<p>Please enter a name with 5-30 characters.</p>');
+
+	if(document.querySelector('input[name="rating"]:checked')) {
+		rating = document.querySelector('input[name="rating"]:checked').value;
+	} else {
+		errors.push('<p>Please choose a rating.</p>');
+	}
+	if(comments.length > 250 || comments.length < 0) errors.push('<p>Please write comments with between 25-250 characters in length. </p>');
+
+	if(errors.length > 0) {
+		errorContainer.innerHTML = errors.join('');
+		errorContainer.style.padding = '10px';
+	} else {
+		errorContainer.innerHTML = '';
+		const review = [name, rating, comments, restaurantId];
+
+		DBHelper.addReview(review, () => DBHelper.getReviewsByRestaurant(restaurantId, (error, reviews) => {
+			self.restaurant.reviews = reviews;
+			fillReviewsHTML();
+		}));
+
+		document.getElementById('review-form').reset();
+		modal.style.display = 'none';
+	}
+}
 /**
  * Get a parameter by name from page URL.
  */

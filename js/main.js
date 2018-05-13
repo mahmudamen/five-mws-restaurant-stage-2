@@ -163,6 +163,10 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
+  	const fav = document.createElement('img');
+	fav.classList.add('fav');
+	fav.id = restaurant.id;
+  
   return li
 }
 

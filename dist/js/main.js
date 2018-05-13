@@ -10,6 +10,7 @@ var markers = []
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  registerServiceWorker();
 });
 
 /**
@@ -162,6 +163,10 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
+  	const fav = document.createElement('img');
+	fav.classList.add('fav');
+	fav.id = restaurant.id;
+  
   return li
 }
 
@@ -181,6 +186,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 /**
 add serverWorker
 */
+registerServiceWorker = () => {
 if ( navigator.serviceWorker ) {
     navigator.serviceWorker.register( './sw.js' )
         .then( () => {
@@ -191,3 +197,4 @@ if ( navigator.serviceWorker ) {
         } );
 
 }
+};

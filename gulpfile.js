@@ -9,6 +9,7 @@ var watch = require('gulp-watch');
 gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], function() {
 
 	browserSync.init({
+		browser: 'google chrome',
 		server: './dist',
 		port: 8000
 	});
@@ -16,6 +17,7 @@ gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], fu
 	gulp.watch('sass/**/*.scss', ['styles']);
 	gulp.watch('js/**/*.js', ['scripts']);
 	gulp.watch('/*.html', ['copy-html']);
+	gulp.watch('./sw.js', ['sw']);
 	gulp.watch('./dist/*.html').on('change', browserSync.reload);
 });
 gulp.task('scripts2', function() {
@@ -48,7 +50,11 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('copy-images', function() {
-	gulp.src('img/*')
+	gulp.src('img/**/*')
+		.pipe(imagemin({
+			progressive: true,
+			use: [pngquant()]
+		}))
 		.pipe(gulp.dest('dist/img'));
 });
 gulp.task('s-w', function() {
