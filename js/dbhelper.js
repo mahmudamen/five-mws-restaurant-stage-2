@@ -50,7 +50,7 @@ static getAPIData(api, callback, id=null, param=null) {
 					}) 
 				};
 				break;
-			case 'favorize':
+			case 'fav':
 				api_url = `http://localhost:${port}/restaurants/${id}/?is_favorite=${param}`;
 				fetch_options = {method: 'PUT'};
 				break;
@@ -295,4 +295,34 @@ static getAPIData(api, callback, id=null, param=null) {
     });
   }
 
+	static toggleFav(mode, id) {
+
+		id = parseInt(id);
+
+		// Check if restaurant idb exist, create otherwise
+		let restaurantDbPromise = idb.open('restaurantDb', 1, (upgradeDB) => {
+			let restaurantStore = upgradeDB.createObjectStore('restaurantDb', {keyPath: 'id'});
+		});
+
+		DBHelper.getAPIData('fav', () => {
+			console.log(`Server: Restaurant ID ${id} updated!`)}, id, mode);
+
+		restaurantDbPromise.then( db => {
+			let tx = db.transaction('restaurantDb');
+			let restaurantStore = tx.objectStore('restaurantDb');
+			return restaurantStore.get(id);
+
+		}).then(restaurant => {
+
+			mode ? restaurant.is_favorite = true : restaurant.is_favorite = false;
+
+			restaurantDbPromise.then( db => {
+				let tx = db.transaction('restaurantDb', 'readwrite');
+				let restaurantStore = tx.objectStore('restaurantDb');
+				restaurantStore.put(restaurant);
+				return restaurantStore.get(id);
+			}).then( (restaurant) => console.log(`Restaurant ${restaurant.name} Favorized!`));
+			
+		});
+	};
 }

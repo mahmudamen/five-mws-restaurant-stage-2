@@ -195,6 +195,12 @@ nav h1 a {
   min-height: 248px;
   min-width: 100%;
 }
+#restaurants-list .fav {
+  margin: 0;
+  max-width: 10%;
+  min-height: 58px;
+  min-width: 10%;
+}
 #restaurants-list li h1 {
   color: #f18200;
   font-family: Arial,sans-serif;

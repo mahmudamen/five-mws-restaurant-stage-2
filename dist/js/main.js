@@ -166,9 +166,24 @@ createRestaurantHTML = (restaurant) => {
   	const fav = document.createElement('img');
 	fav.classList.add('fav');
 	fav.id = restaurant.id;
-  		fav.setAttribute('src', '/img/fav-icon.png');
-		fav.classList.add('favorized');
-	li.append(fav);
+  		fav.setAttribute('src', '/img/fav.png');
+		//fav.classList.add('favorized');
+
+	
+	fav.onclick = function toggleFav() {
+		
+		if(this.classList.contains('fav')) {
+			this.src = '/img/fav.png';
+			this.classList.remove('fav');
+			DBHelper.toggleFav(false, this.id);
+		} else {
+			this.src = '/img/faved.png';
+			this.classList.add('fav');
+			DBHelper.toggleFav(true, this.id);
+		}
+		console.log('Favorize toggled, mode is: ', this.classList.contains('fav') );
+	};
+		li.append(fav);
   return li
 }
 
