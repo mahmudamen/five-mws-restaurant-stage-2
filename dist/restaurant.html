@@ -20,9 +20,9 @@
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ol id="breadcrumb">
+    <ul id="breadcrumb" aria-label="Breadcrumb" role="navigation">
       <li><a href="/">Home</a></li>
-    </ol>
+    </ul>
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -31,7 +31,7 @@
   <!-- Beginning main -->
   <main id="maincontent">
     <!-- Beginning map -->
-    <section id="map-container">
+    <section id="map-container" aria-hidden="true" role="presentation">
       <div id="map" role="application"></div>
     </section>
     <!-- End map -->
@@ -51,7 +51,7 @@
     <!-- End reviews -->
   </main>
   <!-- End main -->
-<div id="add-review-modal" class="modal" style="display: block;">
+<div id="add-review-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
         <h2>Add Review</h2>
