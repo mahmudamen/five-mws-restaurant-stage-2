@@ -325,4 +325,30 @@ static getAPIData(api, callback, id=null, param=null) {
 			
 		});
 	};
+	
+
 }
+
+
+
+window.addEventListener('offline', (event) => {
+	console.log('Browser: Offline now!');
+});
+
+window.addEventListener('online', (event) => {
+
+	let review = localStorage.getItem('review');
+
+	if(review !== null) {
+
+		review = review.split(',');
+		console.log(review);
+
+		DBHelper.getAPIData('addReview', (data) => console.log(data), null, review);
+		console.log('data sent to api');
+
+		localStorage.removeItem('review');
+		console.log('Local Storage: Review removed')
+	}
+	console.log('Browser: Online again!');
+});
