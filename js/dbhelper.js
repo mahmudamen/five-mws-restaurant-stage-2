@@ -325,10 +325,93 @@ static getAPIData(api, callback, id=null, param=null) {
 			
 		});
 	};
-	
-
 }
+static fetchData(mode, callback) {
+		console.log('FetchMode: ', mode);
 
+		// Check if idb store exists, create otherwise
+		let restaurantDbPromise = idb.open('restaurantDb', 1, (upgradeDB) => {
+			let restaurantStore = upgradeDB.createObjectStore('restaurantDb', {keyPath: 'id'}); // Value: Key
+		});
+
+		let reviewDbPromise = idb.open('reviews', 1, (upgradeDB) => {
+			let reviewStore = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
+			reviewStore.createIndex('by-restaurantId', 'restaurant_id');
+		});
+		
+		// Get restaurants from the store
+		if(mode !== 'reviews'){
+			restaurantDbPromise.then( (db) => {
+				let tx = db.transaction('restaurantDb');
+				let restaurantStore = tx.objectStore('restaurantDb');
+				return restaurantStore.getAll();
+			}).then( (restaurants) => {
+		
+				// Restaurants found
+				if(restaurants.length > 0) {
+					console.log('IDB: Restaurants retrieved ', restaurants);
+		
+					callback(null, restaurants);
+					
+					if(mode === 'restaurantById' || mode === 'restaurantByCuisineAndNeighborhood') {
+						DBHelper.getAPIData('restaurantDb', (restaurants) => {
+		
+							let worker = new Worker('js/worker.js');
+							worker.postMessage(restaurants);
+							worker.onmessage = (e) => console.log(e.data);
+			
+						});
+					}
+					
+				} else {
+					console.log('IDB: No restaurants found');
+
+						DBHelper.getAPIData('restaurantDb', (restaurants) => {
+							
+							callback(null, restaurants);
+			
+							// Put data into IDB
+							restaurantDbPromise.then( db => {
+								let tx = db.transaction('restaurantDb', 'readwrite');
+								let restaurantStore = tx.objectStore('restaurantDb');
+			
+								restaurants.forEach( restaurant => {
+									restaurantStore.put(restaurant);
+								});
+			
+								return tx.complete;
+		
+						}).then( () => console.log('IDB: Objects stored'));
+					});
+				} 
+				
+			});
+		}
+		if(mode === 'reviews') {
+			reviewDbPromise.then( db => {
+				let tx = db.transaction('reviews');
+				let reviewStore = tx.objectStore('reviews');
+				return reviewStore.getAll();
+			}).then( (reviews) => {
+				DBHelper.getAPIData('reviews', (reviews) => {
+
+					callback(null, reviews);
+					// Put Reviews in DB
+					reviewDbPromise.then( db => {
+						let tx = db.transaction('reviews', 'readwrite');
+						let reviewStore = tx.objectStore('reviews');
+
+						reviews.forEach( review => {
+							reviewStore.put(review);
+						});
+
+					});
+
+				});
+			});
+		}
+		
+	};
 
 
 window.addEventListener('offline', (event) => {

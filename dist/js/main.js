@@ -121,7 +121,16 @@ resetRestaurants = (restaurants) => {
   self.markers = [];
   self.restaurants = restaurants;
 }
+reloadimg = () => {
+	let images = document.getElementsByTagName('img');
 
+	for(var i=0; i < images.length; i++) {
+		if (images[i].getAttribute('data-src')) {
+			images[i].setAttribute('src', images[i].getAttribute('data-src'));
+		}
+	}
+	console.log('Images Lazy Loaded!');
+}
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
@@ -166,8 +175,13 @@ createRestaurantHTML = (restaurant) => {
   	const fav = document.createElement('img');
 	fav.classList.add('fav');
 	fav.id = restaurant.id;
-  		fav.setAttribute('src', '/img/fav.png');
-		//fav.classList.add('favorized');
+	
+		if(restaurant.is_favorite === true || restaurant.is_favorite === 'true'){
+		fav.setAttribute('src', '/img/faved.png');
+		fav.classList.add('faved');
+	} else {
+		fav.setAttribute('src', '/img/fav.png');
+	}
 
 	
 	fav.onclick = function toggleFav() {
@@ -199,6 +213,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+  reloadimg();
 }
 /**
 add serverWorker
