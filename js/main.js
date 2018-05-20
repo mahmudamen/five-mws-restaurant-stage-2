@@ -175,8 +175,13 @@ createRestaurantHTML = (restaurant) => {
   	const fav = document.createElement('img');
 	fav.classList.add('fav');
 	fav.id = restaurant.id;
-  		fav.setAttribute('src', '/img/fav.png');
-		//fav.classList.add('favorized');
+	
+		if(restaurant.is_favorite === true || restaurant.is_favorite === 'true'){
+		fav.setAttribute('src', '/img/faved.png');
+		fav.classList.add('faved');
+	} else {
+		fav.setAttribute('src', '/img/fav.png');
+	}
 
 	
 	fav.onclick = function toggleFav() {
