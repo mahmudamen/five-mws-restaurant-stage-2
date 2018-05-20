@@ -121,7 +121,16 @@ resetRestaurants = (restaurants) => {
   self.markers = [];
   self.restaurants = restaurants;
 }
+reloadimg = () => {
+	let images = document.getElementsByTagName('img');
 
+	for(var i=0; i < images.length; i++) {
+		if (images[i].getAttribute('data-src')) {
+			images[i].setAttribute('src', images[i].getAttribute('data-src'));
+		}
+	}
+	console.log('Images Lazy Loaded!');
+}
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
@@ -199,6 +208,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+  reloadimg();
 }
 /**
 add serverWorker
