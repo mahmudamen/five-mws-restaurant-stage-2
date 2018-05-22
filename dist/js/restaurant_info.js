@@ -59,7 +59,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = `Image  ${restaurant.name}`;
+  image.alt = `Image of the ${restaurant.name}`;
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
@@ -68,9 +68,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchReviews();
 }
-
+fetchReviews = () => {
+	DBHelper.getReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
+		self.restaurant.reviews = reviews;
+		fillReviewsHTML();
+	});
+}
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
@@ -195,11 +200,12 @@ addReview = () => {
 
 		DBHelper.addReview(review, () => DBHelper.getReviewsByRestaurant(restaurantId, (error, reviews) => {
 			self.restaurant.reviews = reviews;
-			fillReviewsHTML();
+			  fetchReviews();
 		}));
 
 		document.getElementById('review-form').reset();
 		modal.style.display = 'none';
+		 fetchReviews();
 	}
 }
 /**

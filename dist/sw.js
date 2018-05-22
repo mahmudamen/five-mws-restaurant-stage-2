@@ -20,7 +20,8 @@ self.addEventListener('install', (event) => {
               './img/8.webp',
               './img/9.webp',
               './img/10.webp',
-			  './img/fav-icon.png',
+			  './img/fav.png',
+			  './img/faved.png',
       ];
       event.waitUntil(
     		caches.open('restaurant-cache-v1').then( (cache) => {

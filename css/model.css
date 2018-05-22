@@ -82,7 +82,7 @@
   display: inline-block;
 }
 
-// Stars Div
+
 .rating {
   padding: 0;
   border: none;
@@ -97,7 +97,7 @@
   display: inline-block;
 }
 
-// The Stars
+
 .rating > label {
   display: inline-block;
   position: relative;
@@ -129,61 +129,12 @@
   opacity: 0;
 }
 
-#form-error {
-  background-color: lightcoral;
-  color: darkred;
-  border-radius: 10px;
-}
 
-#reviews-list {
-  margin: 0;
-  padding: 0;
-}
-
-.review {
-  background-color: #fff;
-  color: #666;
-  border: 2px solid #f3f3f3;
-  border-top-left-radius: 25px;
-  border-bottom-right-radius: 25px;
-  display: block;
-  margin: 0 0 30px;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-}
-.review-header {
-  background-color: #000;
-  color: #fff;
-  overflow: hidden;
-  padding: 20px;
-}
-
-.reviewer-name {
-  float: left;
-  font-size: 1.5em;
-  font-weight: 200;
-  color: #fff;
-}
-
-.review-date {
-  float: right;
-  font-size: 1.1em;
-  color: #999;
-}
-
-.review-rating {
-  background-color: #f18200;
-  color: #fff;
-  text-transform: uppercase;
-  padding: 3px 15px;
-  margin: 10px 10px 10px 0;
-  border-radius: 3px;
-  display: inline-block;
-}
-
-.review-body {
-  padding: 10px;
-  font-size: 1.1em;
-  line-height: 1.4em;
+#toggle-review-modal {
+    background-color: #f18200;
+    border-radius: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 1.2em;
+    color: white;
 }
