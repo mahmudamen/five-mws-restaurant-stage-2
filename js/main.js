@@ -8,16 +8,27 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  fetchNeighborhoods();
-  fetchCuisines();
-  registerServiceWorker();
+  IDBHelper.databaseExists(dbName='restaurantsDb', function (yesno) {
+    if (yesno) {
+      console.log(dbName + " exists? " + yesno);
+    } else {
+      console.log(dbName + " exists? " + yesno);
+      IDBHelper.createNewDatabase();
+      IDBHelper.populateDatabase(IDBHelper.dbPromise);
+    }
+  });
+
+  setTimeout(function() {
+    fetchNeighborhoods();
+    fetchCuisines();
+  }, 3000)
 });
 
 /**
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+  IDBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
       console.error(error);
     } else {
@@ -44,7 +55,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
  * Fetch all cuisines and set their HTML.
  */
 fetchCuisines = () => {
-  DBHelper.fetchCuisines((error, cuisines) => {
+  IDBHelper.fetchCuisines((error, cuisines) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -90,14 +101,17 @@ window.initMap = () => {
 updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
+  const fSelect = document.getElementById('fav');
 
   const cIndex = cSelect.selectedIndex;
   const nIndex = nSelect.selectedIndex;
+  const fValue = fSelect.checked;
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
+  const favorite = fValue;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
+  IDBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, favorite, (error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -121,16 +135,7 @@ resetRestaurants = (restaurants) => {
   self.markers = [];
   self.restaurants = restaurants;
 }
-reloadimg = () => {
-	let images = document.getElementsByTagName('img');
 
-	for(var i=0; i < images.length; i++) {
-		if (images[i].getAttribute('data-src')) {
-			images[i].setAttribute('src', images[i].getAttribute('data-src'));
-		}
-	}
-	console.log('Images Lazy Loaded!');
-}
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
@@ -150,7 +155,7 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = IDBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `Image  ${restaurant.name}`;
   li.append(image);
 
@@ -169,13 +174,12 @@ createRestaurantHTML = (restaurant) => {
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
-  more.href = DBHelper.urlForRestaurant(restaurant);
+  more.href = IDBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
   	const fav = document.createElement('img');
 	fav.classList.add('fav');
 	fav.id = restaurant.id;
-	
 		if(restaurant.is_favorite === true || restaurant.is_favorite === 'true'){
 		fav.setAttribute('src', '/img/faved.png');
 		fav.classList.add('faved');
@@ -189,11 +193,11 @@ createRestaurantHTML = (restaurant) => {
 		if(this.classList.contains('fav')) {
 			this.src = '/img/fav.png';
 			this.classList.remove('fav');
-			DBHelper.toggleFav(false, this.id);
+			IDBHelper.toggleFav(false, this.id);
 		} else {
 			this.src = '/img/faved.png';
 			this.classList.add('fav');
-			DBHelper.toggleFav(true, this.id);
+			IDBHelper.toggleFav(true, this.id);
 		}
 		console.log('Favorize toggled, mode is: ', this.classList.contains('fav') );
 	};
@@ -207,26 +211,26 @@ createRestaurantHTML = (restaurant) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+    const marker = IDBHelper.mapMarkerForRestaurant(restaurant, self.map);
     google.maps.event.addListener(marker, 'click', () => {
       window.location.href = marker.url
     });
     self.markers.push(marker);
   });
-  reloadimg();
+
 }
 /**
 add serverWorker
 */
 registerServiceWorker = () => {
-if ( navigator.serviceWorker ) {
-    navigator.serviceWorker.register( './sw.js' )
-        .then( () => {
-            console.log( `SW registered` )
-        } )
-        .catch( () => {
-            console.log( "Registration failed" );
-        } );
-
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js', {scope: '/'})
+      .then(reg => {
+        console.log('sw on main page has been registered')
+      }).catch(err => {
+      console.log('sw registration fails')
+    });
+  });
 }
 };

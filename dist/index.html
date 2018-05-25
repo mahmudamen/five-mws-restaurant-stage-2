@@ -27,20 +27,24 @@
     <section>
       <div class="filter-options">
         <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" aria-label="Neighborhood selection" >
+        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" aria-label="neighborhood filter">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" aria-label="Cuisine selection">
+        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" aria-label="cuisine filter">
           <option value="all">All Cuisines</option>
         </select>
+		<div class="select-group">
+          <input id="fav" type="checkbox" name="fav" onclick="updateRestaurants()" aria-label="Show favorites only">
+          <div class="fav">Show Favorites Only</div>
+        </div>
       </div>
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-<script type="application/javascript" src="js/idb.js"></script>
+  <script type="application/javascript" src="js/idb.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN4oKI0hk_ATJRYPrGH1WPCO1LxbOgI2I&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN4oKI0hk_ATJRYPrGH1WPCO1LxbOgI2I&callback=initMap" type="text/javascript"></script>
 
 
   <footer id="footer">

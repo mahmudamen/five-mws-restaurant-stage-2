@@ -60,8 +60,7 @@ header{
 #maincontent {
   min-height: 100%;
   width: 100%;
-	  display: flex;
-		flex-wrap: wrap;
+	flex-wrap: wrap;
 }
 #footer {
   background-color: #444;
@@ -498,18 +497,12 @@ nav h1 a {
     max-width: 100%;
     min-height: 40%;
 }
-#restaurants-list .fav {
-  margin: 0;
-  max-width: 5%;
-  min-height: 32px;
-  min-width: 5%;
-}
 .inside #footer {
 	width: 100%;
 }
 #maincontent {
 	width:100%;
-    display: grid;
+  min-height: 100%;
 	
 }
 .inside #map-container {
@@ -574,23 +567,6 @@ background: blue none repeat scroll 0 0;
 #restaurants-list .restaurant-img {
     background-color: #ccc;
     display: block;
-	opacity: 1;
-  transition: opacity 0.3s;
-    margin: 0;
-    max-width: 100%;
-    min-height: 45%;
-}
-#restaurants-list .fav {
-  margin: 0;
-  max-width: 5%;
-  min-height: 32px;
-  min-width: 5%;
-}
-#restaurants-list .restaurant-img[data-src] {
-    background-color: #ccc;
-    display: block;
-	opacity: 1;
-  transition: opacity 0.3s;
     margin: 0;
     max-width: 100%;
     min-height: 45%;

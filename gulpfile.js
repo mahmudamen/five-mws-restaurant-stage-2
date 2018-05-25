@@ -4,9 +4,13 @@ var autoprefixer = require('gulp-autoprefixer');
 var browserSync = require('browser-sync').create();
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var eslint = require('gulp-eslint');
+var babel = require('gulp-babel');
+var babelr = require('babel-register');  
+var sourcemaps = require('gulp-sourcemaps');
 var watch = require('gulp-watch');
 
-gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], function() {
+gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'sourcemaps', 'scripts'], function() {
 
 	browserSync.init({
 		server: './dist',
@@ -19,25 +23,33 @@ gulp.task('default', ['copy-html', 'copy-images', 'styles','s-w', 'scripts'], fu
 	gulp.watch('./sw.js', ['sw']);
 	gulp.watch('./dist/*.html').on('change', browserSync.reload);
 });
-gulp.task('scripts2', function() {
-    return gulp.src(['js/app.js','js/idb.js','js/dbhelper.js','js/main.js'])
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist/js/indexBundle'));
-});
-gulp.task('dist', [
-	'copy-html',
-	'copy-images',
-	'styles',
-	'scripts-dist'
-]);
+
+
 
 gulp.task('scripts', function() {
 	gulp.src('js/**/*.js')
+			.pipe(babel())
 		.pipe(gulp.dest('dist/js'));
 });
-
+gulp.task('eslint', function() {
+	return gulp.src(['js/**/*.js'])
+		.pipe(eslint())
+		.pipe(eslint.format())
+		.pipe(eslint.failOnError());
+});
+gulp.task('sourcemaps', () =>
+    gulp.src('src/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['env']
+        }))
+        .pipe(concat('all.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('dist'))
+);
 gulp.task('scripts-dist', function() {
 	gulp.src('js/**/*.js')
+			.pipe(babel())
 		.pipe(concat('all.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/js'));

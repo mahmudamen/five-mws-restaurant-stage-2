@@ -1,5 +1,5 @@
 let restaurant;
-var map;
+let map;
 let modal = document.getElementById('add-review-modal');
 let closeBtn = document.getElementsByClassName('close')[0];
 /**
@@ -16,7 +16,7 @@ window.initMap = () => {
         scrollwheel: false
       });
       fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      IDBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
 }
@@ -34,7 +34,7 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+    IDBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -58,7 +58,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = IDBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `Image of the ${restaurant.name}`;
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -69,9 +69,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fetchReviews();
+    registerServiceWorker();
 }
 fetchReviews = () => {
-	DBHelper.getReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
+	IDBHelper.getReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
 		self.restaurant.reviews = reviews;
 		fillReviewsHTML();
 	});
@@ -137,9 +138,13 @@ createReviewHTML = (review) => {
   name.innerHTML = review.name;
   li.appendChild(name);
 
-  const date = document.createElement('p');
-  date.innerHTML = review.date;
-  li.appendChild(date);
+  const reviewDate = document.createElement('p');
+  let formattedDate = new Date(review.updatedAt);
+  let date = formattedDate.getDate();
+  let month = formattedDate.getMonth();
+  let year = formattedDate.getFullYear();
+  reviewDate.innerHTML = month + "/" + date + "/" + year;
+  li.appendChild(reviewDate);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -171,43 +176,6 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
 }
 
 
-addReview = () => {
-	event.preventDefault();
-	let restaurantId = getParameterByName('id');
-	let name = document.getElementById('anon').value;
-	let rating;
-	let comments = document.getElementById('review-comments').value;
-
-	let errors = [];
-	let errorContainer = document.getElementById('form-error');
-
-	// Basic Form Validation
-	if(name.length < 5 || name.length > 30) errors.push('<p>Please enter a name with 5-30 characters.</p>');
-
-	if(document.querySelector('input[name="rating"]:checked')) {
-		rating = document.querySelector('input[name="rating"]:checked').value;
-	} else {
-		errors.push('<p>Please choose a rating.</p>');
-	}
-	if(comments.length > 250 || comments.length < 0) errors.push('<p>Please write comments with between 25-250 characters in length. </p>');
-
-	if(errors.length > 0) {
-		errorContainer.innerHTML = errors.join('');
-		errorContainer.style.padding = '10px';
-	} else {
-		errorContainer.innerHTML = '';
-		const review = [name, rating, comments, restaurantId];
-
-		DBHelper.addReview(review, () => DBHelper.getReviewsByRestaurant(restaurantId, (error, reviews) => {
-			self.restaurant.reviews = reviews;
-			  fetchReviews();
-		}));
-
-		document.getElementById('review-form').reset();
-		modal.style.display = 'none';
-		 fetchReviews();
-	}
-}
 /**
  * Get a parameter by name from page URL.
  */
@@ -222,4 +190,15 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+registerServiceWorker = () => {
+  navigator.serviceWorker.register('sw.js', {scope: '/'})
+    .then(reg => {
+      document.getElementById('restoForm').addEventListener('submit', () => {
+        reg.sync.register('review-sync')
+          .then(() => console.log('Review sync registered'));
+      })
+    })
+    .catch(err => console.log('sw registration fails'));
 }
