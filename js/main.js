@@ -1,8 +1,8 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines;
+var map;
+var markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
-  IDBHelper.fetchNeighborhoods((error, neighborhoods) => {
+  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
       console.error(error);
     } else {
@@ -55,7 +55,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
  * Fetch all cuisines and set their HTML.
  */
 fetchCuisines = () => {
-  IDBHelper.fetchCuisines((error, cuisines) => {
+  DBHelper.fetchCuisines((error, cuisines) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -111,7 +111,7 @@ updateRestaurants = () => {
   const neighborhood = nSelect[nIndex].value;
   const favorite = fValue;
 
-  IDBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, favorite, (error, restaurants) => {
+  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, favorite, (error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -155,7 +155,7 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = IDBHelper.imageUrlForRestaurant(restaurant);
+  image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `Image  ${restaurant.name}`;
   li.append(image);
 

@@ -1,7 +1,7 @@
 /**
  * Common database helper functions.
  */
-class IDBHelper {
+class DBHelper {
 
   /**
    * Database URL.
@@ -58,7 +58,7 @@ class IDBHelper {
    * Initialize data population
    */
   static populateDatabase(dbPromise) {
-    fetch(IDBHelper.DATABASE_URL).then(res => res.json()).then(json => {
+    fetch(DBHelper.DATABASE_URL).then(res => res.json()).then(json => {
       json.map(restaurant => IDBHelper.populateRestaurantsWithReviews(restaurant, dbPromise));
     });
   }
@@ -90,7 +90,7 @@ class IDBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -111,7 +111,7 @@ class IDBHelper {
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
     // Fetch all restaurants  with proper error handling
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -127,7 +127,7 @@ class IDBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // Fetch all restaurants
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -143,7 +143,7 @@ class IDBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, favorite, callback) {
     // Fetch all restaurants
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -170,7 +170,7 @@ class IDBHelper {
    */
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -201,7 +201,7 @@ class IDBHelper {
    */
   static fetchCuisines(callback) {
     // Fetch all restaurants
-    IDBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -269,7 +269,15 @@ class IDBHelper {
       return tx.complete;
     });
   }
-
+  static deleteOldDatabase() {
+    let DBDeleteRequest = window.indexedDB.deleteDatabase("restaurantsDb");
+    DBDeleteRequest.onerror = function () {
+      console.log("Error deleting database.");
+    };
+    DBDeleteRequest.onsuccess = function () {
+      console.log("Old db successfully deleted!");
+    };
+  }
   static addRestaurantsFromAPI() {
     return fetch(IDBHelper.DATABASE_URL).then(function (response) {
       return response.json();
@@ -278,9 +286,21 @@ class IDBHelper {
       return restaurants;
     });
   }
-
+  static saveOfflineReview(event, form) {
+    event.preventDefault();
+    const body = {
+      "restaurant_id": parseInt(form.id.value),
+      "name": form.dname.value,
+      "rating": parseInt(form.drating.value),
+      "comments": form.dreview.value,
+      "updatedAt": parseInt(form.ddate.value),
+      "flag": form.dflag.value
+    };
+    IDBHelper.idbPostReview(form.id.value, body);
+    location.reload();
+  }
   static getCachedRestaurants() {
-    return IDBHelper.openDatabase().then(function (db) {
+    return DBHelper.openDatabase().then(function (db) {
       if (!db) return;
 
       var store = db.transaction('restaurants').objectStore('restaurants');

@@ -1,5 +1,6 @@
 importScripts('/js/idb.js');
 importScripts('/js/dbhelper.js');
+importScripts('/js/idbhelper.js');
 
 let staticCacheName = 'restaurants-static-v3';
 self.addEventListener('install', (event) => {
@@ -10,6 +11,7 @@ self.addEventListener('install', (event) => {
               './css/styles.css',
               './css/model.css',
               './js/dbhelper.js',
+			  './js/idbhelper',
               './js/main.js',
 			  './js/idb.js',
               './js/restaurant_info.js',
