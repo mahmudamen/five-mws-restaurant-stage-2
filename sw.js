@@ -1,5 +1,4 @@
 importScripts('/js/idb.js');
-importScripts('/js/dbhelper.js');
 importScripts('/js/idbhelper.js');
 
 let staticCacheName = 'restaurants-static-v3';

@@ -239,7 +239,7 @@ class DBHelper {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
-      url: IDBHelper.urlForRestaurant(restaurant),
+      url: DBHelper.urlForRestaurant(restaurant),
       map: map,
       animation: google.maps.Animation.DROP}
     );
@@ -341,7 +341,7 @@ static saveOfflineReview(event, form) {
 	static toggleFav(id, condition) {
 		fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${condition}`, { method: 'POST' })
       .then(res => console.log('restaurant favorite has been updated'))
-      .then(IDBHelper.idbToggleFavorite(id, condition))
+      .then(DBHelper.idbToggleFavorite(id, condition))
       .then(location.reload());
 	};
 }

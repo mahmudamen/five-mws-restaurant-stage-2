@@ -174,7 +174,7 @@ createRestaurantHTML = (restaurant) => {
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
-  more.href = IDBHelper.urlForRestaurant(restaurant);
+  more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
   	const fav = document.createElement('img');
@@ -193,11 +193,11 @@ createRestaurantHTML = (restaurant) => {
 		if(this.classList.contains('fav')) {
 			this.src = '/img/fav.png';
 			this.classList.remove('fav');
-			IDBHelper.toggleFav(false, this.id);
+			DBHelper.toggleFav(false, this.id);
 		} else {
 			this.src = '/img/faved.png';
 			this.classList.add('fav');
-			IDBHelper.toggleFav(true, this.id);
+			DBHelper.toggleFav(true, this.id);
 		}
 		console.log('Favorize toggled, mode is: ', this.classList.contains('fav') );
 	};
@@ -211,7 +211,7 @@ createRestaurantHTML = (restaurant) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = IDBHelper.mapMarkerForRestaurant(restaurant, self.map);
+    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
     google.maps.event.addListener(marker, 'click', () => {
       window.location.href = marker.url
     });

@@ -37,7 +37,7 @@ fetchRestaurantFromURL = callback => {
     error = 'No restaurant id in URL';
     callback(error, null);
   } else {
-    IDBHelper.fetchRestaurantById(id, (error, restaurant) => {
+    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -75,7 +75,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   registerServiceWorker();
 };
 fetchReviews = () => {
-  IDBHelper.getReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
+  DBHelper.getReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
     self.restaurant.reviews = reviews;
     fillReviewsHTML();
   });
